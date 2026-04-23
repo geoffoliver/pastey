@@ -15,6 +15,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow-y: auto;
     }
 
     /* ── Dropzone ───────────────────────────────────────────────────────────── */
@@ -31,7 +32,7 @@
       border-radius: 20px;
       padding: 48px;
       text-align: center;
-      cursor: default;
+      cursor: pointer;
       user-select: none;
       transition: border-color 0.2s, background 0.2s;
     }
@@ -216,11 +217,46 @@
       transition: color 0.15s;
     }
     .gh-link:hover { color: #9ca3af; }
+
+    .mobile-only { display: none; }
+
+    @media (max-width: 640px) {
+      body {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px 24px 72px;
+      }
+
+      #dropzone {
+        width: 100%;
+        height: auto;
+        min-height: 200px;
+        padding: 40px 20px;
+      }
+
+      #preview-panel {
+        width: 100%;
+        padding: 16px 0;
+        gap: 16px;
+      }
+
+      #preview-img { max-height: 38vh; }
+
+      .options-card { padding: 16px; }
+
+      /* Prevent iOS from zooming into inputs on focus */
+      select,
+      input[type="number"] { font-size: 1rem; }
+
+      .desktop-only { display: none; }
+      .mobile-only  { display: inline; }
+    }
   </style>
 </head>
 <body>
 
   <!-- ── Initial drop / paste zone ───────────────────────────────────────── -->
+  <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" hidden>
   <div id="dropzone">
     <svg class="dz-icon" width="56" height="56" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
@@ -228,8 +264,15 @@
       <circle cx="8.5" cy="8.5" r="1.5"/>
       <polyline points="21 15 16 10 5 21"/>
     </svg>
-    <p class="dz-text">Paste or drag &amp; drop your image</p>
-    <p class="dz-hint">PNG, JPG, or WEBP &nbsp;&middot;&nbsp; <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd></p>
+    <p class="dz-text">
+      <span class="desktop-only">Paste or drag &amp; drop your image</span>
+      <span class="mobile-only">Tap to select your image</span>
+    </p>
+    <p class="dz-hint">
+      PNG, JPG, or WEBP
+      <span class="desktop-only">&nbsp;&middot;&nbsp; <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd></span>
+      <span class="mobile-only">&nbsp;&middot;&nbsp; up to 20 MB</span>
+    </p>
   </div>
 
   <!-- ── Preview + options (shown after image is selected) ───────────────── -->
@@ -282,6 +325,7 @@
 
   <script>
     const dropzone     = document.getElementById('dropzone');
+    const fileInput    = document.getElementById('file-input');
     const previewPanel = document.getElementById('preview-panel');
     const previewImg   = document.getElementById('preview-img');
     const deleteAfter  = document.getElementById('delete-after');
@@ -324,6 +368,17 @@
       errorMsg.textContent = msg;
       errorMsg.hidden = false;
     }
+
+    // ── File input (mobile tap-to-select) ─────────────────────────────────────
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) {
+        handleFile(fileInput.files[0]);
+        fileInput.value = '';
+      }
+    });
 
     // ── Paste ──────────────────────────────────────────────────────────────────
 
