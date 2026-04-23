@@ -90,9 +90,13 @@ app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
 });
 
-app.get('/ie.webp', (_req: Request, res: Response) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'ie.webp'));
-});
+// app.get('/ie.webp', (_req: Request, res: Response) => {
+//   res.sendFile(path.join(process.cwd(), 'public', 'ie.webp'));
+// });
+
+app.use('/img', express.static(path.join(process.cwd(), 'public', 'web', 'img')));
+
+app.use('/favicon.ico', express.static(path.join(process.cwd(), 'public', 'web', 'img', 'favicon.ico')));
 
 app.post('/upload', uploadLimiter, validateCsrf, upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
@@ -170,6 +174,11 @@ app.use('/uploads', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// generic 404 handler for everything else
+app.use((_req: Request, res: Response) => {
+  res.status(404).sendFile(path.join(process.cwd(), 'public', '404.html'));
+});
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
