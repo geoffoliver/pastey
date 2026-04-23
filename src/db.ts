@@ -1,7 +1,8 @@
 import { Database } from 'bun:sqlite';
 import path from 'path';
 
-export const db = new Database(path.join(process.cwd(), 'pastey.db'));
+const dbPath = process.env.DATABASE_PATH ?? path.join(process.cwd(), 'pastey.db');
+export const db = new Database(dbPath);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS uploads (

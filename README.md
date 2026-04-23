@@ -42,6 +42,33 @@ Copy `.env.example` to `.env` and adjust as needed. Bun loads this automatically
 PORT=3000
 ```
 
+## Docker
+
+The easiest way to run pastey. Images are published to the GitHub Container Registry automatically on every push to `main`.
+
+```bash
+# Download docker-compose.yml
+curl -O https://raw.githubusercontent.com/geoffoliver/pastey/main/docker-compose.yml
+
+# Start
+docker compose up -d
+```
+
+The app will be available at `http://localhost:3000`. Uploads and the database are stored in named Docker volumes (`pastey_uploads` and `pastey_data`) so they survive container restarts and upgrades.
+
+To update to the latest image:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+### Environment variables (Docker)
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3000` | Port the app listens on inside the container |
+| `DATABASE_PATH` | `/app/data/pastey.db` | Path to the SQLite database file |
+
 ## Development
 
 ```bash
@@ -65,6 +92,11 @@ bash init-pm2.sh
 pastey/
 ├── config.json          # app configuration
 ├── .env                 # environment variables (not committed)
+├── Dockerfile
+├── docker-compose.yml
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml   # builds & pushes image to ghcr.io
 ├── src/
 │   ├── index.ts         # Express server + routes
 │   ├── db.ts            # SQLite setup and schema

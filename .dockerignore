@@ -1,0 +1,8 @@
+.env
+.git
+.gitignore
+node_modules
+pastey.db
+uploads/
+deploy.sh
+init-pm2.sh

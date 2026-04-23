@@ -1,0 +1,16 @@
+services:
+  pastey:
+    image: ghcr.io/geoffoliver/pastey:latest
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - pastey_uploads:/app/uploads
+      - pastey_data:/app/data
+    environment:
+      PORT: 3000
+      DATABASE_PATH: /app/data/pastey.db
+    restart: unless-stopped
+
+volumes:
+  pastey_uploads:
+  pastey_data:

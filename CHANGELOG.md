@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.4] - 2026-04-22
+
+### Added
+
+- `Dockerfile` using `oven/bun:1` as the base image; builds for `linux/amd64` and `linux/arm64`
+- `docker-compose.yml` pulling from `ghcr.io/geoffoliver/pastey:latest` with named volumes for uploads (`pastey_uploads`) and database (`pastey_data`)
+- `.github/workflows/docker-publish.yml` — GitHub Actions workflow that builds and pushes the image to the GitHub Container Registry on every push to `main` and on `v*.*.*` tags; no extra secrets required (uses `GITHUB_TOKEN`)
+- `tsconfig.json` for correct IDE type resolution
+- `DATABASE_PATH` environment variable support in `src/db.ts` so the SQLite database path is configurable (used by Docker to place the DB in a named volume)
+- Docker quick-start and environment variable documentation added to `README.md`
+
 ## [0.0.3] - 2026-04-22
 
 ### Fixed

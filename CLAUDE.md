@@ -42,6 +42,6 @@ Any HTML that gets rendered should be separated out into template files and use 
 
 Keep an updated README.md that includes instructions for installing and running the app.
 
-Keep an updated CHANGELOG.md that includes a summary of all the major changes you make.
-
 Configuration options should be kept in a `config.json` file.
+
+Whenever I tell you to "commit your changes", you should ask me which version number to update in the package.json (major, minor, or patch), then update the package.json accordingly. After that, run `git diff`, and summarize the results in CHANGELOG.md under a heading with the new version number. Finally, run `git add --all`, followed by `git commit -m [message]` replacing "[message]" with a short commit message, and finally `git push`.
