@@ -465,7 +465,9 @@
         shareBtn.disabled = false;
       });
 
+      const csrfToken = document.cookie.split('; ').find(c => c.startsWith('pastey_csrf='))?.split('=')[1] ?? '';
       xhr.open('POST', '/upload');
+      xhr.setRequestHeader('X-CSRF-Token', csrfToken);
       xhr.send(formData);
     });
   </script>

@@ -1,8 +1,10 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
+import { randomBytes } from 'crypto';
 import path from 'path';
 import { mkdir, unlink } from 'fs/promises';
 import { db } from './db';
@@ -33,6 +35,26 @@ const upload = multer({
   },
 });
 
+// ── Rate limiting & CSRF ──────────────────────────────────────────────────────
+
+const uploadLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Too many uploads. Please wait a few minutes and try again.' },
+});
+
+function validateCsrf(req: Request, res: Response, next: NextFunction): void {
+  const cookie = req.cookies.pastey_csrf as string | undefined;
+  const header = req.headers['x-csrf-token'] as string | undefined;
+  if (!cookie || cookie !== header) {
+    res.status(403).json({ error: 'Invalid request.' });
+    return;
+  }
+  next();
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 export const DURATIONS: Record<string, number> = {
@@ -56,7 +78,14 @@ interface UploadRow {
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
-app.get('/', (_req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
+  if (!req.cookies.pastey_csrf) {
+    res.cookie('pastey_csrf', randomBytes(32).toString('hex'), {
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      httpOnly: false, // must be readable by JS for the double-submit pattern
+      sameSite: 'strict',
+    });
+  }
   res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
 });
 
@@ -64,7 +93,7 @@ app.get('/ie.webp', (_req: Request, res: Response) => {
   res.sendFile(path.join(process.cwd(), 'public', 'ie.webp'));
 });
 
-app.post('/upload', upload.single('image'), async (req: Request, res: Response) => {
+app.post('/upload', uploadLimiter, validateCsrf, upload.single('image'), async (req: Request, res: Response) => {
   if (!req.file) {
     res.status(400).json({ error: 'No image provided' });
     return;
