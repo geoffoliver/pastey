@@ -320,7 +320,7 @@
 
   <!-- ── Preview + options (shown after image is selected) ───────────────── -->
   <div id="preview-panel" hidden>
-    <img id="preview-img" alt="Preview" />
+    <img id="preview-img" alt="Preview" hidden />
 
     <div class="options-card">
       <!-- Duration -->
@@ -411,6 +411,7 @@
       const url = URL.createObjectURL(file);
       previewImg.onload = () => URL.revokeObjectURL(url);
       previewImg.src = url;
+      previewImg.hidden = false;
       dropzone.hidden = true;
       previewPanel.hidden = false;
       errorMsg.hidden = true;
@@ -524,6 +525,7 @@
           // Reset UI back to the dropzone
           selectedFile = null;
           previewImg.src = '';
+          previewImg.hidden = true;
           previewPanel.hidden = true;
           dropzone.hidden = false;
           progressWrap.hidden = true;
