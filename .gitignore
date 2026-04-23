@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+pastey.db
+uploads/
+deploy.sh

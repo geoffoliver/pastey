@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>The page cannot be displayed</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      background: #fff;
+      color: #000;
+      padding-bottom: 26px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px 14px;
+    }
+
+    .header h1 {
+      font-family: Arial, sans-serif;
+      font-size: 22px;
+      font-weight: bold;
+      color: #39c;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Horizontal rules ── */
+    hr {
+      border: none;
+      border-top: 1px solid #aaa;
+    }
+
+    /* ── Content areas ── */
+    .section {
+      padding: 12px 16px 12px 96px;
+    }
+
+    p { line-height: 1.55; }
+    p + p { margin-top: 10px; }
+
+    .inner-rule { margin: 12px 0; }
+
+    .try-heading {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    /* ── Windows-style buttons ── */
+    .win-btn {
+      display: inline-block;
+      background: #f0ece4;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #555;
+      border-bottom: 1px solid #555;
+      box-shadow: inset 1px 1px 0 #dfdfdf;
+      padding: 1px 10px 2px;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      cursor: default;
+      color: #000;
+      text-decoration: none;
+      vertical-align: baseline;
+    }
+    .win-btn:active {
+      border-top: 1px solid #555;
+      border-left: 1px solid #555;
+      border-right: 1px solid #fff;
+      border-bottom: 1px solid #fff;
+      box-shadow: none;
+    }
+
+    /* ── Status bar ── */
+    .statusbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 22px;
+      background: #d4d0c8;
+      border-top: 1px solid #fff;
+      box-shadow: inset 0 1px 0 #e8e4dc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 11px;
+    }
+
+    .statusbar-left { padding: 0 6px; }
+
+    .statusbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .status-panel {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-left: 1px solid #888;
+      padding: 0 8px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="header">
+    <img src="/ie.webp" alt="Internet Explorer logo" width="48" height="48">
+    <h1>The page cannot be displayed</h1>
+  </div>
+
+  <hr>
+
+  <!-- ── Description ─────────────────────────────────────────────────────── -->
+  <div class="section">
+    <p>The page you are looking for is currently unavailable. The Web site might be
+    experiencing technical difficulties, or you may need to adjust your browser
+    settings.</p>
+
+    <hr class="inner-rule">
+
+    <p class="try-heading">Please try the following:</p>
+
+    <ul>
+      <li>
+        Click the <span class="win-btn" onclick="location.reload()">Refresh</span> button,
+        or try again later.
+      </li>
+      <li>
+        If you typed the page address in the Address bar, make sure that it is spelled
+        correctly.
+      </li>
+      <li>
+        To check your connection settings, click the <b>Tools</b> menu, and then click
+        <b>Internet Options</b>. On the <b>Connections</b> tab, click <b>Settings</b>.
+        The settings should match those provided by your local area network (LAN)
+        administrator or Internet service provider (ISP).
+      </li>
+      <li>
+        If your Network Administrator has enabled it, Microsoft Windows can examine your
+        network and automatically discover network connection settings.<br>
+        If you would like Windows to try and discover them,
+        click <span class="win-btn">Detect Network Settings</span>
+      </li>
+      <li>
+        Some sites require 128-bit connection security. Click the <b>Help</b> menu and
+        then click <b>About Internet Explorer</b> to determine what strength security you
+        have installed.
+      </li>
+      <li>
+        If you are trying to reach a secure site, make sure your Security settings can
+        support it. Click the <b>Tools</b> menu, and then click <b>Internet Options</b>.
+        On the <b>Advanced</b> tab, scroll to the Security section and check settings for
+        SSL&nbsp;2.0, SSL&nbsp;3.0, TLS&nbsp;1.0, PCT&nbsp;1.0.
+      </li>
+      <li>
+        Click the <span class="win-btn" onclick="history.back()">Back</span> button to
+        try another link.
+      </li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <!-- ── Technical info ──────────────────────────────────────────────────── -->
+  <div class="section">
+    <p class="try-heading">Technical Information (for support personnel)</p>
+    <ul>
+      <li>
+        Error Type:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;HTTP 404 - Not Found<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Internet Explorer
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── Status bar ──────────────────────────────────────────────────────── -->
+  <div class="statusbar">
+    <span class="statusbar-left">Done</span>
+    <div class="statusbar-right">
+      <div class="status-panel">
+        <!-- tiny globe -->
+        <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="7" cy="7" r="6" fill="none" stroke="#555" stroke-width="1"/>
+          <ellipse cx="7" cy="7" rx="3" ry="6" fill="none" stroke="#555" stroke-width="1"/>
+          <line x1="1" y1="7" x2="13" y2="7" stroke="#555" stroke-width="1"/>
+          <line x1="7" y1="1" x2="7" y2="13" stroke="#555" stroke-width="1"/>
+        </svg>
+        Internet
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
