@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.3] - 2026-04-22
+
+### Fixed
+
+- Set `trust proxy` on the Express app so `express-rate-limit` can correctly identify client IPs when running behind a reverse proxy, eliminating the `ERR_ERL_UNEXPECTED_X_FORWARDED_FOR` warning
+
+### Changed
+
+- After a successful upload the UI now resets back to the dropzone rather than navigating away — the image opens in a new tab, all options reset to defaults, and the selected file is cleared
+- A dismissible toast notification slides up from the bottom confirming "Link copied to clipboard!" (or a fallback message if clipboard access was denied); the toast persists until explicitly dismissed or until a new image is selected via paste, drop, or tap
+
 ## [0.0.2] - 2026-04-22
 
 ### Added

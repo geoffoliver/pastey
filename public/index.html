@@ -204,6 +204,49 @@
       color: #374151;
     }
 
+    /* ── Toast ──────────────────────────────────────────────────────────────── */
+
+    #toast {
+      position: fixed;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #064e3b;
+      border: 1px solid #10b981;
+      color: #d1fae5;
+      padding: 12px 16px 12px 14px;
+      border-radius: 10px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    #toast:not([hidden]) {
+      display: flex;
+      animation: toast-in 0.2s ease;
+    }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    #toast-close {
+      background: none;
+      border: none;
+      color: #6ee7b7;
+      cursor: pointer;
+      font-size: 1.125rem;
+      line-height: 1;
+      padding: 0;
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+    #toast-close:hover { color: #d1fae5; }
+
     .gh-link {
       position: fixed;
       bottom: 16px;
@@ -316,6 +359,15 @@
     <p class="replace-hint">Paste or drop a new image to replace</p>
   </div>
 
+  <div id="toast" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="toast-msg">Link copied to clipboard!</span>
+    <button id="toast-close" aria-label="Dismiss">&times;</button>
+  </div>
+
   <a class="gh-link" href="https://github.com/geoffoliver/pastey" target="_blank" rel="noopener">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
@@ -336,6 +388,9 @@
     const progressWrap = document.getElementById('progress-wrap');
     const progressBar  = document.getElementById('progress-bar');
     const errorMsg     = document.getElementById('error-msg');
+    const toast        = document.getElementById('toast');
+    const toastMsg     = document.getElementById('toast-msg');
+    const toastClose   = document.getElementById('toast-close');
 
     const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
     const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
@@ -369,12 +424,24 @@
       errorMsg.hidden = false;
     }
 
+    function showToast(msg) {
+      toastMsg.textContent = msg;
+      toast.hidden = false;
+    }
+
+    function hideToast() {
+      toast.hidden = true;
+    }
+
+    toastClose.addEventListener('click', hideToast);
+
     // ── File input (mobile tap-to-select) ─────────────────────────────────────
 
     dropzone.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', () => {
       if (fileInput.files[0]) {
+        hideToast();
         handleFile(fileInput.files[0]);
         fileInput.value = '';
       }
@@ -383,6 +450,7 @@
     // ── Paste ──────────────────────────────────────────────────────────────────
 
     document.addEventListener('paste', (e) => {
+      hideToast();
       const items = Array.from(e.clipboardData.items);
       const imageItem = items.find(item => item.type.startsWith('image/'));
       if (imageItem) {
@@ -407,6 +475,7 @@
     document.addEventListener('drop', (e) => {
       e.preventDefault();
       dropzone.classList.remove('drag-over');
+      hideToast();
       const file = e.dataTransfer.files[0];
       if (file) handleFile(file);
     });
@@ -446,10 +515,26 @@
         if (xhr.status === 200) {
           const { url } = JSON.parse(xhr.responseText);
           const fullUrl = window.location.origin + url;
-          try { await navigator.clipboard.writeText(fullUrl); } catch (_) {
-            console.log(_);
-          }
-          window.location.href = url;
+
+          let copied = false;
+          try { await navigator.clipboard.writeText(fullUrl); copied = true; } catch (_) {}
+
+          window.open(fullUrl, '_blank');
+
+          // Reset UI back to the dropzone
+          selectedFile = null;
+          previewImg.src = '';
+          previewPanel.hidden = true;
+          dropzone.hidden = false;
+          progressWrap.hidden = true;
+          progressBar.style.width = '0%';
+          errorMsg.hidden = true;
+          shareBtn.disabled = false;
+          davCheck.checked = false;
+          viewsRow.classList.remove('visible');
+          deleteAfter.value = '1w';
+
+          showToast(copied ? 'Link copied to clipboard!' : 'Image shared — link opened in new tab.');
         } else {
           let msg = 'Upload failed. Please try again.';
           try { msg = JSON.parse(xhr.responseText).error ?? msg; } catch (_) {}
