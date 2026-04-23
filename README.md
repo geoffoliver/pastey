@@ -1,6 +1,6 @@
 # pastey
 
-A no-login image sharing webapp. Paste or drop an image, get a link, it disappears on schedule.
+A no-login image sharing webapp. Paste or drop an image, get a link, it disappears on schedule. Written with a robot.
 
 [View Demo](https://pastey.geoffoliver.me)
 
