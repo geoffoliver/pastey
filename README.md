@@ -2,6 +2,8 @@
 
 A no-login image sharing webapp. Paste or drop an image, get a link, it disappears on schedule.
 
+[View Demo](https://pastey.geoffoliver.me)
+
 ## Features
 
 - Paste (`Cmd/Ctrl+V`) or drag & drop to share an image
